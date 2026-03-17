@@ -1,0 +1,120 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-danger">Tạo tài khoản</h2>
+                        <p class="text-muted">Gia nhập cộng đồng Codenhalam ngay hôm nay</p>
+                    </div>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.FullName" class="form-control rounded-3" placeholder="Họ và tên" />
+                                    <label asp-for="Input.FullName">Họ và tên</label>
+                                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Email" class="form-control rounded-3" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                    <label asp-for="Input.Email">Email</label>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Age" class="form-control rounded-3" placeholder="Tuổi" />
+                                    <label asp-for="Input.Age">Tuổi</label>
+                                    <span asp-validation-for="Input.Age" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Address" class="form-control rounded-3" placeholder="Địa chỉ" />
+                            <label asp-for="Input.Address">Địa chỉ</label>
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Password" class="form-control rounded-3" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                    <label asp-for="Input.Password">Mật khẩu</label>
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.ConfirmPassword" class="form-control rounded-3" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                    <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select asp-for="Input.Role" asp-items="@Model.RoleList" class="form-select rounded-3">
+                                <option disabled selected>- Chọn vai trò -</option>
+                            </select>
+                            <label asp-for="Input.Role">Vai trò người dùng</label>
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        </div>
+
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-danger btn-lg rounded-pill py-2 fw-bold shadow-sm mb-3">
+                            ĐĂNG KÝ
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <p class="text-muted small mb-0">Đã có tài khoản?</p>
+                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-danger fw-bold text-decoration-none">Đăng nhập tại đây</a>
+                        </div>
+                    </form>
+
+                    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                    {
+                        <div class="mt-4">
+                            <div class="position-relative mb-4">
+                                <hr>
+                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">Hoặc đăng ký bằng</span>
+                            </div>
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                <div class="d-grid gap-2">
+                                    @foreach (var provider in Model.ExternalLogins!)
+                                    {
+                                        <button type="submit" class="btn btn-outline-dark btn-sm rounded-pill py-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                            <i class="bi bi-shield-lock me-2"></i> @provider.DisplayName
+                                        </button>
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a asp-controller="Product" asp-action="Index" class="text-muted text-decoration-none small">
+                    <i class="bi bi-arrow-left me-1"></i> Quay về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

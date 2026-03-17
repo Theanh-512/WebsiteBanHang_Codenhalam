@@ -1,0 +1,10 @@
+@model IEnumerable<WebsiteBanHang.Models.Category>
+
+@foreach (var item in Model)
+{
+    <li>
+        <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryId="@item.Id">
+            <i class="bi bi-tag text-secondary me-2"></i> @item.Name
+        </a>
+    </li>
+}

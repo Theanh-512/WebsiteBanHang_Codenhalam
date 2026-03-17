@@ -1,0 +1,114 @@
+@model WebsiteBanHang.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+}
+
+<style>
+    .form-card {
+        border-radius: 14px;
+        border: none;
+    }
+
+    /* Header nhạt hơn */
+    .form-header {
+        background-color: #ffe5e8;
+        color: #b80012;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    /* Button chính dịu màu */
+    .btn-main {
+        background-color: #d9534f;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .btn-main:hover {
+        background-color: #c9302c;
+        color: #fff;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #d9534f;
+        box-shadow: 0 0 0 0.15rem rgba(217, 83, 79, 0.2);
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card shadow form-card">
+
+                <div class="card-header form-header fw-bold text-center">
+                    Thêm sản phẩm mới
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Add" method="post" enctype="multipart/form-data">
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="fw-semibold">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-semibold">Giá</label>
+                            <input asp-for="Price" type="number" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-semibold">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-semibold text-danger">
+                                Ảnh giao diện sản phẩm (Ảnh chính)
+                            </label>
+                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-semibold">
+                                Ảnh mô tả (Có thể chọn nhiều hình)
+                            </label>
+                            <input asp-for="ImageFiles" type="file" multiple class="form-control" accept="image/*" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-semibold">Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-main px-4">
+                                Thêm sản phẩm
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

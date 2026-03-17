@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4 text-center">
+    <h1 class="display-4 fw-bold text-danger">Admin Dashboard</h1>
+    <p class="lead">Chào mừng bạn đến với trang quản trị hệ thống.</p>
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0 h-100 p-3">
+                <div class="card-body">
+                    <i class="bi bi-box-seam display-3 text-danger mb-3 d-block"></i>
+                    <h5 class="card-title fw-bold">Quản lý Sản phẩm</h5>
+                    <p class="card-text text-muted">Thêm, sửa, xóa và quản lý kho sản phẩm.</p>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-danger w-100 mt-2">Truy cập</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0 h-100 p-3">
+                <div class="card-body">
+                    <i class="bi bi-tags display-3 text-danger mb-3 d-block"></i>
+                    <h5 class="card-title fw-bold">Quản lý Danh mục</h5>
+                    <p class="card-text text-muted">Quản lý các nhóm sản phẩm trong cửa hàng.</p>
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-danger w-100 mt-2">Truy cập</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0 h-100 p-3">
+                <div class="card-body">
+                    <i class="bi bi-cart-check display-3 text-success mb-3 d-block"></i>
+                    <h5 class="card-title fw-bold">Quản lý Đơn hàng</h5>
+                    <p class="card-text text-muted">Theo dõi và xử lý đơn hàng từ khách hàng.</p>
+                    <a href="#" class="btn btn-success w-100 mt-2 disabled">Đang phát triển</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

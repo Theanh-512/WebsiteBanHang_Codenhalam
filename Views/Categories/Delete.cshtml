@@ -1,0 +1,33 @@
+@model WebsiteBanHang.Models.Category
+
+@{
+    ViewData["Title"] = "Xóa Danh mục";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center fw-bold">
+                    Xác nhận Xóa
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title text-danger">Bạn có chắc chắn muốn xóa danh mục này?</h5>
+                    <p class="card-text">Hành động này không thể hoàn tác.</p>
+                    
+                    <div class="border p-3 bg-light mt-3 mb-4 rounded text-start">
+                        <strong>ID:</strong> @Model.Id <br />
+                        <strong>Tên:</strong> @Model.Name
+                    </div>
+
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-danger">Xóa Dữ liệu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

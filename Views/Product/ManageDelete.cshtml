@@ -1,0 +1,47 @@
+@model IEnumerable<WebsiteBanHang.Models.Product>
+
+@{
+    ViewData["Title"] = "Xóa sản phẩm";
+}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4 text-danger fw-bold">
+        Danh sách sản phẩm cần xóa
+    </h3>
+
+    <table class="table table-bordered table-hover bg-white">
+        <thead class="table-danger">
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th width="140">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("N0") ₫</td>
+                    <td>
+                        <form asp-action="DeleteConfirmed"
+                              asp-route-id="@item.Id"
+                              method="post"
+                              onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm w-100">
+                                Xóa
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

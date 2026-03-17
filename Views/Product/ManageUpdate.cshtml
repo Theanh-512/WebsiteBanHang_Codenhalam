@@ -1,0 +1,41 @@
+@model IEnumerable<WebsiteBanHang.Models.Product>
+
+@{
+    ViewData["Title"] = "Cập nhật sản phẩm";
+}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4 text-danger fw-bold">
+        Danh sách sản phẩm cần chỉnh sửa
+    </h3>
+
+    <table class="table table-bordered table-hover bg-white">
+        <thead class="table-danger">
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th width="120">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("N0") ₫</td>
+                    <td>
+                        <a asp-action="Update"
+                           asp-route-id="@item.Id"
+                           class="btn btn-primary btn-sm w-100">
+                            Sửa
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

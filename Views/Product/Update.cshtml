@@ -1,0 +1,97 @@
+@model WebsiteBanHang.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Cập nhật sản phẩm";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white fw-bold">
+                    Cập nhật sản phẩm
+                </div>
+
+                <div class="card-body">
+
+                    <form asp-action="Update" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label>Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Giá</label>
+                            <input asp-for="Price" type="number" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Mô tả</label>
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                        </div>
+
+                        <div class="mb-4 text-center">
+                            <label class="fw-bold d-block text-danger mb-2">Ảnh giao diện sản phẩm</label>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl"
+                                     style="height:150px; object-fit:contain; border: 2px solid #dc3545;"
+                                     class="img-thumbnail mb-2" />
+                            }
+                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                            <small class="text-muted">Chọn ảnh mới nếu muốn thay đổi ảnh chính.</small>
+                        </div>
+
+                        <div class="mb-4 text-center">
+                            <label class="fw-bold d-block mb-2">Ảnh mô tả hiện tại</label>
+                            @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+                            {
+                                <div class="mb-2">
+                                    @foreach (var imgUrl in Model.ImageUrls)
+                                    {
+                                        <img src="@imgUrl"
+                                             style="height:80px; width: 80px; object-fit:cover; margin-right: 5px;"
+                                             class="img-thumbnail" />
+                                    }
+                                </div>
+                            }
+                            <label class="d-block mt-3 text-start">Thêm ảnh mô tả mới</label>
+                            <input asp-for="ImageFiles" type="file" multiple class="form-control" accept="image/*" />
+                            
+                            <div class="form-check mt-3 text-start">
+                                <input asp-for="DeleteAllImages" class="form-check-input" />
+                                <label asp-for="DeleteAllImages" class="form-check-label text-danger fw-bold">
+                                    Xóa tất cả ảnh hiện tại (cả ảnh chính và ảnh mô tả)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                Quay lại
+                            </a>
+
+                            <button type="submit" class="btn btn-danger">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
