@@ -1,0 +1,37 @@
+@model int
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container mt-5 mb-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 py-5">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success display-1"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-3">ĐẶT HÀNG THÀNH CÔNG!</h2>
+                    <p class="text-muted fs-5 mb-4">Cảm ơn bạn đã tin tưởng mua sắm tại <strong>SHOP MOBILE</strong>. Đơn hàng của bạn đã được tiếp nhận.</p>
+                    
+                    <div class="bg-light p-4 rounded-4 mb-4 text-start">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Mã đơn hàng:</span>
+                            <span class="fw-bold text-danger">#@Model.ToString("D6")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Trạng thái:</span>
+                            <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                        </div>
+                        <p class="small text-muted mt-3 mb-0"><i class="bi bi-clock me-1"></i> Chúng tôi sẽ liên hệ với bạn trong vòng 30 phút để xác nhận đơn hàng.</p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Product" asp-action="Index" class="btn btn-danger py-3 rounded-pill fw-bold shadow-sm">TIẾP TỤC MUA SẮM</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

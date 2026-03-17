@@ -1,0 +1,61 @@
+@model WebsiteBanHang.Models.Order
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-danger text-center"><i class="bi bi-credit-card me-2"></i>THÔNG TIN THANH TOÁN</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Checkout" method="post">
+                        <div class="row g-4">
+                            <!-- Left Column: User Info -->
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Họ và tên người nhận</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                                        <input class="form-control bg-light border-start-0" value="@Model.ApplicationUser?.FullName" readonly />
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="ShippingAddress" class="form-label fw-bold">Địa chỉ giao hàng</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-geo-alt text-muted"></i></span>
+                                        <input asp-for="ShippingAddress" class="form-control rounded-end-3" placeholder="Số nhà, tên đường, quận/huyện..." />
+                                    </div>
+                                    <span asp-validation-for="ShippingAddress" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Notes" class="form-label fw-bold">Ghi chú (Tùy chọn)</label>
+                                    <textarea asp-for="Notes" class="form-control bg-light" rows="3" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi đến..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="col-12 text-center">
+                                <p class="text-muted small mb-4">Bằng việc đặt hàng, bạn đồng ý với các <a href="#" class="text-danger">điều khoản và chính sách</a> của chúng tôi.</p>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2">Quay lại giỏ hàng</a>
+                                    <button type="submit" class="btn btn-danger rounded-pill px-5 py-2 fw-bold shadow-sm">XÁC NHẬN ĐẶT HÀNG</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

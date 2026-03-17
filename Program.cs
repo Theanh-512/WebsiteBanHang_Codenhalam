@@ -25,6 +25,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
+// Config Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -41,6 +50,8 @@ var app = builder.Build();
 
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
