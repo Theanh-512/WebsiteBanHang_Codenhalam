@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebsiteBanHang</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+            body {
+                background-color: #f5f5f5;
+                padding-top: 64px; /* Tránh bị che mất nội dung khi header fixed */
+            }
+
+            /* HEADER ĐỎ PHONG CÁCH CELLPHONES */
+            .navbar-custom {
+                background-color: #d70018;
+                padding: 10px 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030;
+                height: 64px;
+            }
+
+            .navbar-brand {
+                font-size: 24px;
+                font-weight: 800;
+                color: #fff !important;
+                letter-spacing: -1px;
+                padding: 0;
+                margin-right: 20px;
+            }
+
+            .btn-nav-custom {
+                background-color: rgba(255, 255, 255, 0.15);
+                color: #fff !important;
+                border: none;
+                border-radius: 12px;
+                padding: 0 15px; /* Padding ngang cố định */
+                font-size: 13px;
+                font-weight: 600;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center; /* Căn giữa để gap hoạt động chuẩn */
+                gap: 10px; /* Khoảng cách giữa chữ và icon luôn bằng 10px */
+                transition: 0.3s;
+                text-decoration: none;
+                height: 42px;
+                width: 140px; /* Tăng nhẹ độ rộng để thoải mái cho chữ dài */
+                margin-left: 8px;
+            }
+            .btn-nav-custom:hover {
+                background-color: rgba(255, 255, 255, 0.25);
+            }
+            /* Xử lý mũi tên dropdown cho khớp concept */
+            .dropdown-toggle::after {
+                margin-left: 5px;
+                vertical-align: middle;
+            }
+            
+            /* Riêng nút Danh mục theo mẫu */
+            .btn-category {
+                flex-direction: row !important;
+                gap: 8px !important;
+                font-size: 13px !important;
+                padding: 0 15px !important;
+            }
+
+            .btn-nav-custom:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+                border-radius: 10px;
+            }
+
+            .search-container {
+                flex-grow: 1;
+                max-width: 450px;
+                margin: 0 15px;
+                position: relative;
+            }
+
+            .search-input {
+                border-radius: 10px;
+                padding: 8px 12px 8px 40px;
+                font-size: 14px;
+                border: none;
+                width: 100%;
+                height: 40px;
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #666;
+                font-size: 18px;
+            }
+
+            .nav-item-text {
+                line-height: 1;
+                font-weight: 500;
+            }
+
+            .product-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border: 1px solid #f0f0f0 !important;
+            }
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+            }
+            .text-truncate-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .product-card img {
+                height: 240px !important; /* Phóng to thêm nữa */
+                transition: transform 0.5s ease;
+                object-fit: contain;
+                padding: 15px;
+            }
+            .product-card:hover img {
+                transform: scale(1.05);
+            }
+            .btn-add-to-cart {
+                font-size: 11px !important;
+                padding: 8px 10px !important;
+                text-transform: uppercase;
+                background-color: #d70018 !important;
+                border: none !important;
+            }
+
+            .footer-custom {
+                background-color: #fff;
+                padding: 20px 0;
+                margin-top: 40px;
+                font-size: 14px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
+            <div class="container">
+
+                <!-- LOGO (Theo phong cách CellphoneS) -->
+                <a class="navbar-brand me-3" asp-controller="Product" asp-action="Index">
+                    Codenhalam
+                </a>
+
+                <!-- 1. DANH MỤC DYNAMIC -->
+                @await Component.InvokeAsync("CategoryMenu")
+
+                <!-- 2. THANH TÌM KIẾM -->
+                <div class="search-container">
+                    <form asp-controller="Product" asp-action="Index" method="get">
+                        <i class="bi bi-search search-icon"></i>
+                        <input class="form-control search-input" type="search" name="keyword"
+                               placeholder="Bạn muốn mua gì hôm nay?" />
+                    </form>
+                </div>
+
+                <!-- 3. GIỎ HÀNG -->
+                <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-nav-custom">
+                    <span>Giỏ hàng</span>
+                    <i class="bi bi-cart3 fs-5"></i>
+                </a>
+
+                <!-- 4. TÀI KHOẢN -->
+                <partial name="_LoginPartial" />
+
+                <!-- QUẢN LÝ (Admin & Employee) -->
+                @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-nav-custom dropdown-toggle" type="button" data-bs-toggle="dropdown" style="width: auto; min-width: 130px; padding: 0 15px;">
+                            <span>Quản lý</span>
+                            <i class="bi bi-layout-text-sidebar-reverse fs-5"></i>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            @if (User.IsInRole(SD.Role_Admin))
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                                        <i class="bi bi-tags me-2 text-danger"></i> Quản lý danh mục
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                                    <i class="bi bi-receipt me-2 text-danger"></i> Quản lý đơn hàng
+                                </a>
+                            </li>
+                            @if (User.IsInRole(SD.Role_Admin))
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                        <i class="bi bi-list-ul me-2"></i> Quản lý sản phẩm
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Add">
+                                        <i class="bi bi-plus-circle me-2"></i> Thêm sản phẩm
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">
+                                        <i class="bi bi-people me-2 text-danger"></i> Quản lý tài khoản
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="container-fluid mt-3">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-custom mt-5 pt-5 pb-4 border-top">
+        <div class="container">
+            <div class="row">
+
+                <!-- CỘT 1 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Tổng đài hỗ trợ miễn phí</h6>
+                    <p class="mb-1">Mua hàng: <strong>1800 2097</strong></p>
+                    <p class="mb-3">Khiếu nại: <strong>1800 2063</strong></p>
+
+                    <h6 class="fw-bold mb-3">Phương thức thanh toán</h6>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-light text-dark border">VNPAY</span>
+                        <span class="badge bg-light text-dark border">MOMO</span>
+                        <span class="badge bg-light text-dark border">ZaloPay</span>
+                        <span class="badge bg-light text-dark border">Visa</span>
+                    </div>
+
+                    <h6 class="fw-bold mb-3">Đăng ký nhận tin</h6>
+                    <form>
+                        <input type="email" class="form-control mb-2" placeholder="Nhập email của bạn">
+                        <button class="btn btn-danger w-100">
+                            Đăng ký ngay
+                        </button>
+                    </form>
+                </div>
+
+                <!-- CỘT 2 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Thông tin & Chính sách</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Mua hàng & thanh toán</a></li>
+                        <li><a href="#">Chính sách giao hàng</a></li>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                        <li><a href="#">Tra cứu hóa đơn</a></li>
+                        <li><a href="#">Bảo hành chính hãng</a></li>
+                    </ul>
+                </div>
+
+                <!-- CỘT 3 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Dịch vụ & Hỗ trợ</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Khách hàng doanh nghiệp</a></li>
+                        <li><a href="#">Ưu đãi thanh toán</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Liên hệ hợp tác</a></li>
+                    </ul>
+                </div>
+
+                <!-- CỘT 4 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Kết nối với SHOP MOBILE</h6>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="#" class="text-danger fs-5">Facebook</a>
+                        <a href="#" class="text-danger fs-5">YouTube</a>
+                    </div>
+
+                    <h6 class="fw-bold mt-4 mb-3">Website thành viên</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Trung tâm bảo hành</a></li>
+                        <li><a href="#">Diễn đàn công nghệ</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="text-center small text-muted">
+                © 2026 SHOP MOBILE - Website bán hàng ASP.NET Core MVC
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

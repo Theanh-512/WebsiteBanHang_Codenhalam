@@ -1,0 +1,95 @@
+@model WebsiteBanHang.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-danger"><i class="bi bi-info-circle me-2"></i>Chi tiết đơn hàng #@Model.Id.ToString("D6")</h3>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Thông tin khách hàng & Vận chuyển -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-danger text-white py-3 rounded-top-4">
+                    <h5 class="mb-0">Thông tin nhận hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted small">Khách hàng</label>
+                        <div class="fw-bold">@Model.ApplicationUser?.FullName</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Email / Tài khoản</label>
+                        <div>@Model.ApplicationUser?.Email</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Ngày đặt</label>
+                        <div>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Địa chỉ giao hàng</label>
+                        <div class="fw-bold text-dark">@Model.ShippingAddress</div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="text-muted small">Ghi chú</label>
+                        <p class="fst-italic text-muted">@(string.IsNullOrEmpty(Model.Notes) ? "Không có ghi chú" : Model.Notes)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi tiết sản phẩm -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold">Danh sách sản phẩm</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Sản phẩm</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end pe-4">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="@detail.Product.ImageUrl" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                                                <div class="ms-3">
+                                                    <div class="fw-bold">@detail.Product.Name</div>
+                                                    <small class="text-muted">Mã SP: @detail.ProductId</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">@detail.Quantity</td>
+                                        <td class="text-end">@detail.Price.ToString("N0")₫</td>
+                                        <td class="text-end fw-bold text-danger pe-4">@((detail.Price * detail.Quantity).ToString("N0"))₫</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold py-3 fs-5">TỔNG CỘNG:</td>
+                                    <td class="text-end fw-bold text-danger py-3 fs-5 pe-4">@Model.TotalPrice.ToString("N0")₫</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
