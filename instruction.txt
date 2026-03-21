@@ -1,0 +1,31 @@
+# HƯỚNG DẪN CLONE VÀ SETUP DỰ ÁN
+
+1. Clone dự án từ Github:
+git clone https://github.com/Theanh-512/WebsiteBanHang_Codenhalam.git
+
+2. Di chuyển vào thư mục dự án:
+cd WebsiteBanHang
+
+3. Kiểm tra file appsettings.json:
+- Đảm bảo "ConnectionStrings" khớp với SQL Server của máy mới.
+- Mặc định là: "Server=.;Database=WebsiteBanHangDb;Trusted_Connection=True;..."
+
+4. Khôi phục các gói NuGet (Dependencies):
+dotnet restore
+
+5. Thiết lập Database (Entity Framework Core):
+- Cần cài đặt dotnet-ef nếu chưa có:
+  dotnet tool install --global dotnet-ef
+- Cập nhật database:
+  dotnet ef database update --project WebsiteBanHang
+
+6. Chạy dự án:
+dotnet run --project WebsiteBanHang
+
+# CÁC LỆNH KIỂM TRA MÔI TRƯỜNG DATA
+- Xem danh sách migration đã áp dụng:
+  dotnet ef migrations list --project WebsiteBanHang
+
+- Nếu gặp lỗi database, có thể xóa và tạo lại (CẨN THẬN):
+  dotnet ef database drop --project WebsiteBanHang
+  dotnet ef database update --project WebsiteBanHang
