@@ -39,6 +39,21 @@
                         <span asp-validation-for="Age" class="text-danger"></span>
                     </div>
 
+                    <hr class="my-4" />
+                    <h5 class="mb-3 text-muted fw-bold">Đổi mật khẩu (Bỏ trống nếu không đổi)</h5>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="NewPassword" type="password" class="form-control" placeholder="Mật khẩu mới" />
+                        <label asp-for="NewPassword">Mật khẩu mới</label>
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Xác nhận mật khẩu" />
+                        <label asp-for="ConfirmPassword">Xác nhận mật khẩu</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
                     <div class="mb-4">
                         <label class="form-label fw-bold text-muted mb-2">Vai trò người dùng</label>
                         <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded-3">

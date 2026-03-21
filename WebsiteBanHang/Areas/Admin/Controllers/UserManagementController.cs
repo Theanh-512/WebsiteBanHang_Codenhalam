@@ -83,6 +83,22 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
+                    // Handle password reset if a new password is provided
+                    if (!string.IsNullOrEmpty(model.NewPassword))
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        var resetResult = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                        if (!resetResult.Succeeded)
+                        {
+                            foreach (var error in resetResult.Errors)
+                            {
+                                ModelState.AddModelError("", "Lỗi khi đặt lại mật khẩu: " + error.Description);
+                            }
+                            // If password reset fails, we might still want to update roles, but usually we should return to the view
+                            goto ReturnView; 
+                        }
+                    }
+
                     var userRoles = await _userManager.GetRolesAsync(user);
                     var selectedRoles = model.SelectedRoles ?? new List<string>();
 
@@ -101,11 +117,13 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                 }
             }
 
+        ReturnView:
             var allRoles = await _roleManager.Roles.ToListAsync();
             model.Roles = allRoles.Select(r => new SelectListItem
             {
                 Text = r.Name,
-                Value = r.Name
+                Value = r.Name,
+                Selected = r.Name != null && (model.SelectedRoles?.Contains(r.Name) ?? false)
             }).ToList();
 
             return View(model);
@@ -144,5 +162,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
         public int? Age { get; set; }
         public List<SelectListItem> Roles { get; set; }
         public List<string> SelectedRoles { get; set; }
+
+        public string? NewPassword { get; set; }
+
+        public string? ConfirmPassword { get; set; }
     }
 }
