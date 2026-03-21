@@ -100,5 +100,5 @@ artifacts/
 .localhistory/
 
 # Built-in app settings secrets
-appsettings.json
-appsettings.Development.json
+#appsettings.json
+#appsettings.Development.json
