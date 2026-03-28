@@ -68,27 +68,6 @@
                 </div>
             </div>
 
-            <!-- Cập nhật trạng thái -->
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-dark text-white py-3 rounded-top-4">
-                    <h5 class="mb-0">Cập nhật đơn hàng</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="UpdateStatus" method="post">
-                        <input type="hidden" name="id" value="@Model.Id" />
-                        <div class="d-grid gap-2">
-                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusInProcess" class="btn btn-outline-primary @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusInProcess ? "disabled" : "")">
-                                <i class="bi bi-truck me-2"></i>Xác nhận giao hàng
-                            </button>
-                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusShipped" class="btn btn-outline-success @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusShipped ? "disabled" : "")">
-                                <i class="bi bi-check-circle me-2"></i>Hoàn thành đơn hàng
-                            </button>
-                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusCancelled" class="btn btn-outline-secondary @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusCancelled ? "disabled" : "")">
-                                <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
-                            </button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
 
@@ -136,6 +115,39 @@
                             </tfoot>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cập nhật trạng thái đơn hàng (Căn giữa phía dưới) -->
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm rounded-4 border-top border-danger border-4">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h5 class="fw-bold text-dark">THAY ĐỔI TRẠNG THÁI ĐƠN HÀNG</h5>
+                        <p class="text-muted small">Vui lòng cập nhật trạng thái chính xác theo tiến độ giao hàng thực tế</p>
+                    </div>
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusInProcess" 
+                                    class="btn shadow-sm py-2 px-4 rounded-pill @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusInProcess ? "btn-primary disabled" : "btn-outline-primary")">
+                                <i class="bi bi-truck me-2"></i>Xác nhận giao hàng
+                            </button>
+                            
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusShipped" 
+                                    class="btn shadow-sm py-2 px-4 rounded-pill @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusShipped ? "btn-success disabled" : "btn-outline-success")">
+                                <i class="bi bi-check-circle me-2"></i>Hoàn thành đơn hàng
+                            </button>
+
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusCancelled" 
+                                    class="btn shadow-sm py-2 px-4 rounded-pill @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusCancelled ? "btn-secondary disabled" : "btn-outline-secondary")">
+                                <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
