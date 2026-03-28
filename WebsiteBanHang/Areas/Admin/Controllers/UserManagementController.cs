@@ -59,7 +59,7 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                 {
                     Text = r.Name,
                     Value = r.Name,
-                    Selected = userRoles.Contains(r.Name)
+                    Selected = r.Name != null && userRoles.Contains(r.Name)
                 }).ToList()
             };
 
@@ -143,25 +143,93 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
 
             return BadRequest("Error deleting user");
         }
+
+        public async Task<IActionResult> Create()
+        {
+            var allRoles = await _roleManager.Roles.ToListAsync();
+            var viewModel = new CreateUserViewModel
+            {
+                Roles = allRoles.Select(r => new SelectListItem
+                {
+                    Text = r.Name,
+                    Value = r.Name
+                }).ToList()
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FullName = model.FullName,
+                    Address = model.Address,
+                    Age = model.Age
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password ?? string.Empty);
+
+                if (result.Succeeded)
+                {
+                    if (model.SelectedRoles != null && model.SelectedRoles.Any())
+                    {
+                        await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            var allRoles = await _roleManager.Roles.ToListAsync();
+            model.Roles = allRoles.Select(r => new SelectListItem
+            {
+                Text = r.Name,
+                Value = r.Name,
+                Selected = r.Name != null && (model.SelectedRoles?.Contains(r.Name) ?? false)
+            }).ToList();
+
+            return View(model);
+        }
     }
 
     public class UserRolesViewModel
     {
-        public string UserId { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public IEnumerable<string> Roles { get; set; }
+        public string? UserId { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public IEnumerable<string>? Roles { get; set; }
+    }
+
+    public class CreateUserViewModel
+    {
+        public string? Email { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
+        public int? Age { get; set; }
+        public string? Password { get; set; }
+        public string? ConfirmPassword { get; set; }
+        public List<SelectListItem>? Roles { get; set; }
+        public List<string>? SelectedRoles { get; set; }
     }
 
     public class EditUserViewModel
     {
-        public string Id { get; set; }
-        public string Email { get; set; }
-        public string FullName { get; set; }
-        public string Address { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
         public int? Age { get; set; }
-        public List<SelectListItem> Roles { get; set; }
-        public List<string> SelectedRoles { get; set; }
+        public List<SelectListItem>? Roles { get; set; }
+        public List<string>? SelectedRoles { get; set; }
 
         public string? NewPassword { get; set; }
 

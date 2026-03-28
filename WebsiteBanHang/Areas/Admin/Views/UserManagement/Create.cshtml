@@ -1,0 +1,85 @@
+@model WebsiteBanHang.Areas.Admin.Controllers.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "Thêm người dùng mới";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-danger text-white py-3 rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-person-plus me-2"></i>THÊM TÀI KHOẢN MỚI</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="FullName" class="form-control" placeholder="Họ và tên" />
+                        <label asp-for="FullName">Họ và tên</label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" placeholder="Email" />
+                        <label asp-for="Email">Email</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Address" class="form-control" placeholder="Địa chỉ" />
+                        <label asp-for="Address">Địa chỉ</label>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Age" class="form-control" placeholder="Tuổi" />
+                        <label asp-for="Age">Tuổi</label>
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu" />
+                        <label asp-for="Password">Mật khẩu</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Xác nhận mật khẩu" />
+                        <label asp-for="ConfirmPassword">Xác nhận mật khẩu</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted mb-2">Vai trò người dùng</label>
+                        <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded-3">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedRoles" value="@role.Value" 
+                                           id="role_@role.Value" @(role.Selected ? "checked" : "")>
+                                    <label class="form-check-label" for="role_@role.Value">
+                                        @role.Text
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">
+                            <i class="bi bi-person-check me-2"></i>Tạo tài khoản
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                            Hủy bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
