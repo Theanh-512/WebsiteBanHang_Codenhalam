@@ -9,6 +9,10 @@ using System.Security.Claims;
 
 namespace WebsiteBanHang.Controllers
 {
+    /// <summary>
+    /// Controller xử lý các chức năng liên quan đến giỏ hàng và thanh toán.
+    /// Sử dụng Session để lưu trữ thông tin giỏ hàng tạm thời.
+    /// </summary>
     public class ShoppingCartController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -22,12 +26,18 @@ namespace WebsiteBanHang.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Hiển thị danh sách các món hàng hiện có trong giỏ hàng.
+        /// </summary>
         public IActionResult Index()
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
             return View(cart.Items);
         }
 
+        /// <summary>
+        /// Thêm một sản phẩm vào giỏ hàng.
+        /// </summary>
         public IActionResult AddToCart(int productId, int quantity = 1)
         {
             var product = _productRepository.GetById(productId);
@@ -48,6 +58,9 @@ namespace WebsiteBanHang.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Xóa hoàn toàn một sản phẩm khỏi giỏ hàng.
+        /// </summary>
         public IActionResult RemoveFromCart(int productId)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
@@ -56,6 +69,9 @@ namespace WebsiteBanHang.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Cập nhật số lượng của một sản phẩm trong giỏ hàng.
+        /// </summary>
         public IActionResult UpdateQuantity(int productId, int quantity)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
@@ -72,6 +88,9 @@ namespace WebsiteBanHang.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Hiển thị trang đặt hàng (Checkout). Yêu cầu người dùng phải đăng nhập.
+        /// </summary>
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
@@ -91,6 +110,9 @@ namespace WebsiteBanHang.Controllers
             return View(order);
         }
 
+        /// <summary>
+        /// Xử lý lưu đơn hàng và chi tiết đơn hàng vào database sau khi thanh toán.
+        /// </summary>
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -105,9 +127,11 @@ namespace WebsiteBanHang.Controllers
             var user = await _userManager.GetUserAsync(User);
             order.UserId = user!.Id;
             order.OrderDate = DateTime.Now;
+            order.OrderStatus = SD.StatusPending; // Mặc định là đang chờ
             order.TotalPrice = cart.ComputeTotalValue();
             order.OrderDetails = new List<OrderDetail>();
 
+            // Chuyển đổi từ CartItem sang OrderDetail
             foreach (var item in cart.Items)
             {
                 order.OrderDetails.Add(new OrderDetail
@@ -121,11 +145,15 @@ namespace WebsiteBanHang.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            // Xóa giỏ hàng sau khi đặt thành công
             HttpContext.Session.Remove("Cart");
 
             return View("OrderCompleted", order.Id);
         }
 
+        /// <summary>
+        /// Hiển thị thông báo sau khi đặt hàng thành công.
+        /// </summary>
         public IActionResult OrderCompleted(int id)
         {
             return View(id);

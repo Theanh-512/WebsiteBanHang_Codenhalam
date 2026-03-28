@@ -191,31 +191,32 @@
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow">
-                            @if (User.IsInRole(SD.Role_Admin))
-                            {
-                                <li>
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">
-                                        <i class="bi bi-tags me-2 text-danger"></i> Quản lý danh mục
-                                    </a>
-                                </li>
-                            }
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                                    <i class="bi bi-tags me-2 text-danger"></i> Quản lý danh mục
+                                </a>
+                            </li>
+
                             <li>
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Order" asp-action="Index">
                                     <i class="bi bi-receipt me-2 text-danger"></i> Quản lý đơn hàng
                                 </a>
                             </li>
+
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">
+                                    <i class="bi bi-list-ul me-2"></i> Quản lý sản phẩm
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Add">
+                                    <i class="bi bi-plus-circle me-2"></i> Thêm sản phẩm
+                                </a>
+                            </li>
+
                             @if (User.IsInRole(SD.Role_Admin))
                             {
-                                <li>
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">
-                                        <i class="bi bi-list-ul me-2"></i> Quản lý sản phẩm
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Add">
-                                        <i class="bi bi-plus-circle me-2"></i> Thêm sản phẩm
-                                    </a>
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">
                                         <i class="bi bi-people me-2 text-danger"></i> Quản lý tài khoản

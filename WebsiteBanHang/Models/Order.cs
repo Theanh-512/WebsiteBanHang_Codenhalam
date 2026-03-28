@@ -23,6 +23,8 @@ namespace WebsiteBanHang.Models
 
         public string? Notes { get; set; }
 
+        public string? OrderStatus { get; set; } // Trạng thái đơn hàng
+
         [ValidateNever]
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }

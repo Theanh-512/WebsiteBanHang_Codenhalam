@@ -6,8 +6,12 @@ using WebsiteBanHang.Repositories;
 
 namespace WebsiteBanHang.Areas.Admin.Controllers
 {
+    /// <summary>
+    /// Controller quản lý tất cả sản phẩm của cửa hàng (Admin).
+    /// Hỗ trợ thêm, sửa, xóa và tải lên nhiều hình ảnh cho sản phẩm.
+    /// </summary>
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -24,28 +28,39 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             _env = env;
         }
 
+        /// <summary>
+        /// Hiển thị danh sách tất cả sản phẩm hiện có.
+        /// </summary>
         public IActionResult Index()
         {
             var products = _productRepository.GetAll();
             return View(products);
         }
 
+        /// <summary>
+        /// Hiển thị form thêm sản phẩm mới.
+        /// </summary>
         public IActionResult Add()
         {
             ViewBag.Categories = new SelectList(_categoryRepository.GetAllCategories(), "Id", "Name");
             return View();
         }
 
+        /// <summary>
+        /// Xử lý dữ liệu khi thêm sản phẩm mới kèm hình ảnh.
+        /// </summary>
         [HttpPost]
         public IActionResult Add(Product product)
         {
             if (ModelState.IsValid)
             {
+                // Lưu ảnh chính nếu có
                 if (product.ImageFile != null)
                 {
                     product.ImageUrl = SaveImage(product.ImageFile);
                 }
 
+                // Lưu danh sách ảnh phụ
                 if (product.ImageFiles != null && product.ImageFiles.Count > 0)
                 {
                     product.ImageUrls = new List<string>();
@@ -63,6 +78,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(product);
         }
 
+        /// <summary>
+        /// Hiển thị form cập nhật thông tin sản phẩm.
+        /// </summary>
         public IActionResult Update(int id)
         {
             var product = _productRepository.GetById(id);
@@ -72,6 +90,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(product);
         }
 
+        /// <summary>
+        /// Xử lý cập nhật sản phẩm và quản lý thay đổi hình ảnh.
+        /// </summary>
         [HttpPost]
         public IActionResult Update(Product product)
         {
@@ -80,11 +101,13 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                 var existingProduct = _productRepository.GetById(product.Id);
                 if (existingProduct == null) return NotFound();
 
+                // Cập nhật ảnh chính mới nếu có upload lại
                 if (product.ImageFile != null)
                 {
                     existingProduct.ImageUrl = SaveImage(product.ImageFile);
                 }
 
+                // Cập nhật thêm các ảnh phụ mới
                 if (product.ImageFiles != null && product.ImageFiles.Count > 0)
                 {
                     if (existingProduct.ImageUrls == null) existingProduct.ImageUrls = new List<string>();
@@ -107,7 +130,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(product);
         }
 
-        [Authorize(Roles = SD.Role_Admin)]
+        /// <summary>
+        /// Hiển thị trang xác nhận xóa sản phẩm (Chỉ Admin).
+        /// </summary>
         public IActionResult Delete(int id)
         {
             var product = _productRepository.GetById(id);
@@ -115,14 +140,19 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(product);
         }
 
+        /// <summary>
+        /// Xử lý xóa sản phẩm sau khi đã xác nhận.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = SD.Role_Admin)]
         public IActionResult DeleteConfirmed(int id)
         {
             _productRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Hàm phụ hỗ trợ lưu file ảnh vào thư mục wwwroot/images.
+        /// </summary>
         private string SaveImage(IFormFile image)
         {
             string folder = Path.Combine(_env.WebRootPath, "images");

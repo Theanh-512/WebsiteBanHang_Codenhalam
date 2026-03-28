@@ -7,6 +7,10 @@ using WebsiteBanHang.Models;
 
 namespace WebsiteBanHang.Areas.Admin.Controllers
 {
+    /// <summary>
+    /// Controller quản lý người dùng dành cho Admin.
+    /// Cho phép xem danh sách, thêm mới, chỉnh sửa thông tin, đổi mật khẩu và xóa tài khoản.
+    /// </summary>
     [Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
     public class UserManagementController : Controller
@@ -20,6 +24,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
+        /// <summary>
+        /// Hiển thị danh sách toàn bộ người dùng và vai trò của họ.
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -40,6 +47,10 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(userRolesViewModel);
         }
 
+        /// <summary>
+        /// Hiển thị form chỉnh sửa thông tin người dùng.
+        /// </summary>
+        /// <param name="id">ID của người dùng cần sửa</param>
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -66,6 +77,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Xử lý cập nhật thông tin người dùng, đổi mật khẩu và gán lại vai trò.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(EditUserViewModel model)
         {
@@ -83,7 +97,7 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    // Handle password reset if a new password is provided
+                    // Xử lý đặt lại mật khẩu nếu Admin nhập mật khẩu mới
                     if (!string.IsNullOrEmpty(model.NewPassword))
                     {
                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -94,11 +108,11 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
                             {
                                 ModelState.AddModelError("", "Lỗi khi đặt lại mật khẩu: " + error.Description);
                             }
-                            // If password reset fails, we might still want to update roles, but usually we should return to the view
                             goto ReturnView; 
                         }
                     }
 
+                    // Cập nhật vai trò mới (Xóa vai trò cũ, thêm vai trò đã chọn)
                     var userRoles = await _userManager.GetRolesAsync(user);
                     var selectedRoles = model.SelectedRoles ?? new List<string>();
 
@@ -129,6 +143,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Xử lý xóa người dùng khỏi hệ thống.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -144,6 +161,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return BadRequest("Error deleting user");
         }
 
+        /// <summary>
+        /// Hiển thị form tạo người dùng mới.
+        /// </summary>
         public async Task<IActionResult> Create()
         {
             var allRoles = await _roleManager.Roles.ToListAsync();
@@ -158,6 +178,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Xử lý lưu người dùng mới vào database và gán vai trò ban đầu.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
@@ -201,6 +224,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
         }
     }
 
+    /// <summary>
+    /// ViewModel dùng để hiển thị thông tin người dùng kèm vai trò ở trang danh sách.
+    /// </summary>
     public class UserRolesViewModel
     {
         public string? UserId { get; set; }
@@ -209,6 +235,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
         public IEnumerable<string>? Roles { get; set; }
     }
 
+    /// <summary>
+    /// ViewModel dùng để nhận dữ liệu khi tạo tài khoản mới.
+    /// </summary>
     public class CreateUserViewModel
     {
         public string? Email { get; set; }
@@ -221,6 +250,9 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
         public List<string>? SelectedRoles { get; set; }
     }
 
+    /// <summary>
+    /// ViewModel dùng để xử lý cập nhật thông tin và đổi mật khẩu.
+    /// </summary>
     public class EditUserViewModel
     {
         public string Id { get; set; } = string.Empty;
@@ -230,9 +262,7 @@ namespace WebsiteBanHang.Areas.Admin.Controllers
         public int? Age { get; set; }
         public List<SelectListItem>? Roles { get; set; }
         public List<string>? SelectedRoles { get; set; }
-
         public string? NewPassword { get; set; }
-
         public string? ConfirmPassword { get; set; }
     }
 }

@@ -5,11 +5,14 @@ using WebsiteBanHang.Repositories;
 
 namespace WebsiteBanHang.Controllers
 {
+    /// <summary>
+    /// Controller xử lý các chức năng liên quan đến sản phẩm phía khách hàng.
+    /// Bao gồm: xem danh sách, tìm kiếm, lọc theo danh mục và xem chi tiết sản phẩm.
+    /// </summary>
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-
         private readonly IWebHostEnvironment _env;
 
         public ProductController(
@@ -22,7 +25,9 @@ namespace WebsiteBanHang.Controllers
             _env = env;
         }
 
-
+        /// <summary>
+        /// Trang hiển thị danh sách sản phẩm, có hỗ trợ lọc theo danh mục và tìm kiếm theo từ khóa.
+        /// </summary>
         public IActionResult Index(int? categoryId, string keyword)
         {
             var products = _productRepository.GetAll();
@@ -44,6 +49,9 @@ namespace WebsiteBanHang.Controllers
             return View(products);
         }
 
+        /// <summary>
+        /// Hiển thị form thêm sản phẩm từ phía trang ngoài (thường dành cho người quản lý).
+        /// </summary>
         public IActionResult Add()
         {
             ViewBag.Categories = new SelectList(
@@ -53,11 +61,15 @@ namespace WebsiteBanHang.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Xử lý lưu sản phẩm mới kèm các tệp hình ảnh.
+        /// </summary>
         [HttpPost]
         public IActionResult Add(Product product)
         {
             if (ModelState.IsValid)
             {
+                // Xử lý lưu ảnh chính
                 if (product.ImageFile != null)
                 {
                     string folder = Path.Combine(_env.WebRootPath, "images");
@@ -74,6 +86,7 @@ namespace WebsiteBanHang.Controllers
                     product.ImageUrl = "/images/" + fileName;
                 }
 
+                // Xử lý lưu danh sách ảnh mô tả
                 if (product.ImageFiles != null && product.ImageFiles.Count > 0)
                 {
                     string folder = Path.Combine(_env.WebRootPath, "images");
@@ -113,7 +126,9 @@ namespace WebsiteBanHang.Controllers
             return View(product);
         }
 
-
+        /// <summary>
+        /// Xem chi tiết thông tin một sản phẩm.
+        /// </summary>
         public IActionResult Display(int id)
         {
             var product = _productRepository.GetById(id);
@@ -123,6 +138,9 @@ namespace WebsiteBanHang.Controllers
             return View(product);
         }
 
+        /// <summary>
+        /// Hiển thị form cập nhật sản phẩm.
+        /// </summary>
         public IActionResult Update(int id)
         {
             var product = _productRepository.GetById(id);
@@ -138,8 +156,9 @@ namespace WebsiteBanHang.Controllers
             return View(product);
         }
 
-
-
+        /// <summary>
+        /// Xử lý cập nhật thông tin sản phẩm và quản lý hình ảnh.
+        /// </summary>
         [HttpPost]
         public IActionResult Update(Product product)
         {
@@ -164,6 +183,7 @@ namespace WebsiteBanHang.Controllers
             existingProduct.CategoryId = product.CategoryId;
             existingProduct.DeleteAllImages = product.DeleteAllImages;
 
+            // Xóa hết ảnh nếu người dùng chọn checkbox xóa
             if (product.DeleteAllImages)
             {
                 existingProduct.ImageUrl = null;
@@ -173,6 +193,7 @@ namespace WebsiteBanHang.Controllers
                 }
             }
 
+            // Upload ảnh chính mới
             if (product.ImageFile != null)
             {
                 string folder = Path.Combine(_env.WebRootPath, "images");
@@ -189,6 +210,7 @@ namespace WebsiteBanHang.Controllers
                 existingProduct.ImageUrl = "/images/" + fileName;
             }
 
+            // Upload thêm các ảnh phụ
             if (product.ImageFiles != null && product.ImageFiles.Count > 0)
             {
                 string folder = Path.Combine(_env.WebRootPath, "images");
@@ -208,7 +230,6 @@ namespace WebsiteBanHang.Controllers
                         file.CopyTo(stream);
                     }
                     string url = "/images/" + fileName;
-                    // Khi update sẽ cộng dồn ảnh mô tả
                     existingProduct.ImageUrls.Add(url);
 
                     if (string.IsNullOrEmpty(existingProduct.ImageUrl))
@@ -219,16 +240,21 @@ namespace WebsiteBanHang.Controllers
             }
 
             _productRepository.Update(existingProduct);
-
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Quản lý cập nhật sản phẩm đại trà.
+        /// </summary>
         public IActionResult ManageUpdate()
         {
             var products = _productRepository.GetAll();
             return View(products);
         }
 
+        /// <summary>
+        /// Trang nội dung xóa sản phẩm.
+        /// </summary>
         public IActionResult Delete(int id)
         {
             var product = _productRepository.GetById(id);
@@ -237,20 +263,24 @@ namespace WebsiteBanHang.Controllers
 
             return View(product);
         }
+
+        /// <summary>
+        /// Trang quản lý xóa sản phẩm hàng loạt.
+        /// </summary>
         public IActionResult ManageDelete()
         {
             var products = _productRepository.GetAll();
             return View(products);
         }
 
+        /// <summary>
+        /// Xác nhận xóa sản phẩm khỏi hệ thống.
+        /// </summary>
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
         {
             _productRepository.Delete(id);
             return RedirectToAction("ManageDelete");
         }
-
     }
-
-
 }

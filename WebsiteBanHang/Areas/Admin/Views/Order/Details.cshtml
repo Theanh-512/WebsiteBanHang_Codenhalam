@@ -15,7 +15,7 @@
     <div class="row g-4">
         <!-- Thông tin khách hàng & Vận chuyển -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card border-0 shadow-sm rounded-4 h-100 mb-4">
                 <div class="card-header bg-danger text-white py-3 rounded-top-4">
                     <h5 class="mb-0">Thông tin nhận hàng</h5>
                 </div>
@@ -33,6 +33,31 @@
                         <div>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
                     </div>
                     <div class="mb-3">
+                        <label class="text-muted small">Trạng thái hiện tại</label>
+                        <div class="fw-bold">
+                            @if (Model.OrderStatus == WebsiteBanHang.Models.SD.StatusPending)
+                            {
+                                <span class="badge bg-warning text-dark">@Model.OrderStatus</span>
+                            }
+                            else if (Model.OrderStatus == WebsiteBanHang.Models.SD.StatusInProcess)
+                            {
+                                <span class="badge bg-primary">@Model.OrderStatus</span>
+                            }
+                            else if (Model.OrderStatus == WebsiteBanHang.Models.SD.StatusShipped)
+                            {
+                                <span class="badge bg-success">@Model.OrderStatus</span>
+                            }
+                            else if (Model.OrderStatus == WebsiteBanHang.Models.SD.StatusCancelled)
+                            {
+                                <span class="badge bg-secondary">@Model.OrderStatus</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info">@Model.OrderStatus</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label class="text-muted small">Địa chỉ giao hàng</label>
                         <div class="fw-bold text-dark">@Model.ShippingAddress</div>
                     </div>
@@ -40,6 +65,29 @@
                         <label class="text-muted small">Ghi chú</label>
                         <p class="fst-italic text-muted">@(string.IsNullOrEmpty(Model.Notes) ? "Không có ghi chú" : Model.Notes)</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Cập nhật trạng thái -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-dark text-white py-3 rounded-top-4">
+                    <h5 class="mb-0">Cập nhật đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="d-grid gap-2">
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusInProcess" class="btn btn-outline-primary @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusInProcess ? "disabled" : "")">
+                                <i class="bi bi-truck me-2"></i>Xác nhận giao hàng
+                            </button>
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusShipped" class="btn btn-outline-success @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusShipped ? "disabled" : "")">
+                                <i class="bi bi-check-circle me-2"></i>Hoàn thành đơn hàng
+                            </button>
+                            <button type="submit" name="status" value="@WebsiteBanHang.Models.SD.StatusCancelled" class="btn btn-outline-secondary @(Model.OrderStatus == WebsiteBanHang.Models.SD.StatusCancelled ? "disabled" : "")">
+                                <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
